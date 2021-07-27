@@ -9,7 +9,8 @@ class ErrorPage:
     long_message: str = None
 
 class HttpErrorHandler:
-    def __init__(self, app: Flask, error_page: ErrorPage, page_template_file: str):
+    def __init__(self, app: Flask, error_page: ErrorPage,
+        page_template_file: str, template_arguments={}):
 
         # Register this object to be a handler
         app.register_error_handler(error_page.error_code, self)
@@ -18,7 +19,8 @@ class HttpErrorHandler:
         # that there is a request
         template_options = {
             'error_code' : error_page.error_code,
-            'message' : error_page.message
+            'message' : error_page.message,
+            **template_arguments
         }
         if error_page.long_message is None:
             template_options['long_message'] = ''
@@ -31,7 +33,8 @@ class HttpErrorHandler:
     def __call__(self, *args, **kwargs):
         return self.rendered_template
 
-def create_http_error_handlers(app: Flask, error_pages: list, page_template_file) -> None:
+def create_http_error_handlers(app: Flask, error_pages: list,
+    page_template_file, **kwargs) -> None:
     '''Main function of this package.
     Create error handlers for each item in error_page_data
 
@@ -40,6 +43,7 @@ def create_http_error_handlers(app: Flask, error_pages: list, page_template_file
     @page_template_file: name of the file (in the project's template folder)
         to be used for rendering the templates. The file must have all of the fields of
         an ErrorPage object.
+    All following arguments will be passed to Flask render_template()
     '''
     for page in error_pages:
-        HttpErrorHandler(app, page, page_template_file)
+        HttpErrorHandler(app, page, page_template_file, kwargs)

@@ -9,7 +9,7 @@ Install with `pip install flask-error-templating`.
 ## Usage
 
 ```python
-create_http_error_handlers(app, error_pages, page_template_file)
+create_http_error_handlers(app, error_pages, page_template_file, **kwargs)
 ```
 
 #### Parameters
@@ -34,6 +34,7 @@ error_pages = [
 ```
 
 ###### page_template_file
+
 `page_template_file` is the filename of a HTML file in your projects `templates` folder. Parameters supplied to the file for template rendering are `error_code`, `message` and `long_message`. See the above paragraph for information on these parameters. If `long_message` is not present then an empty string will be rendered in its place - this allows the same template to serve pages with long message and also without.
 
 Example of `page_template_file`:
@@ -48,6 +49,10 @@ Example of `page_template_file`:
     </body>
 </html>
 ```
+
+###### keyword arguments
+
+Often, you will want to pass things like the name of your app to the template when it is being rendered. To allow passing this value, all keyword arguments after `page_template_file` will be passed to Flask's `render_template()` function.
 
 #### Complete basic example:
 ```python
@@ -68,9 +73,8 @@ error_pages = [
     ErrorPage(404, 'The page you are looking for does not exist'),
     ErrorPage(418, 'I\'m a teapot!')
 ]
-create_http_error_handlers(app, error_pages, 'http_error.html')
+create_http_error_handlers(app, error_pages, 'http_error.html', app_name='Some testing app')
 
 if __name__ == '__main__':
     app.run()
-
 ```
