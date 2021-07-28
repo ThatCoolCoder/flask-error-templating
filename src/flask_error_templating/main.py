@@ -39,10 +39,13 @@ def create_http_error_handlers(app: Flask, error_pages: list,
     Create error handlers for each item in error_page_data
 
     @app: your Flask application
+
     @error_pages: a list of ErrorPage objects
+
     @page_template_file: name of the file (in the project's template folder)
         to be used for rendering the templates. The file must have all of the fields of
         an ErrorPage object.
+        
     All following arguments will be passed to Flask render_template()
     '''
     for page in error_pages:
